@@ -1,0 +1,115 @@
+﻿.technologies {
+  padding-block: 1rem clamp(3rem, 6vw, 5rem);
+  text-align: center;
+}
+
+.objective {
+  max-width: 40rem;
+  margin: 0 auto calc(var(--space-unit) * 6);
+  color: var(--text);
+  font-size: clamp(1.125rem, 2.2vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.technology-composition {
+  position: relative;
+  width: min(100%, 840px);
+  aspect-ratio: 600 / 360;
+  margin-inline: auto;
+}
+
+/* Percentages match the SVG coordinates so icons and curves scale together. */
+.technology-rows {
+  position: absolute;
+  inset: 0 16% auto;
+  z-index: 1;
+  display: grid;
+  gap: 0;
+}
+
+.technology-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2.941176%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.technology-row + .technology-row { margin-top: 2.45098%; }
+
+.technology-bubble {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.technology-bubble:hover, .technology-bubble:focus-within { z-index: 2; }
+
+.technology-tooltip {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  padding: 0.4rem 0.65rem;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.technology-bubble:hover .technology-tooltip,
+.technology-bubble:focus-within .technology-tooltip { visibility: visible; }
+
+.technology-icon {
+  display: block;
+  width: 60%;
+  aspect-ratio: 1;
+  background: var(--text);
+  mask: var(--technology-icon) center / contain no-repeat;
+}
+
+.technology-orbits { display: block; width: 100%; height: auto; }
+.technology-connections, .orbital-rings {
+  stroke: var(--border);
+  stroke-width: 0.8;
+}
+.technology-connections { opacity: 0.8; }
+.orbital-rings { opacity: 0.65; }
+.orbital-dots { fill: var(--secondary); opacity: 0.75; }
+.orbital-center { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.orbital-code { stroke: var(--text); }
+
+@media (max-width: 700px) {
+  .objective { max-width: 27rem; margin-bottom: calc(var(--space-unit) * 3); }
+}
+
+@keyframes technology-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(-1 * var(--float-distance))); }
+}
+.technology-composition { container-type: inline-size; }
+.technology-bubble {
+  --float-distance: clamp(3px, 0.6cqw, 5px);
+  animation: technology-float var(--float-duration, 5s) ease-in-out var(--float-delay, 0s) infinite;
+  animation-play-state: paused;
+  transition: scale 180ms ease;
+}
+.technologies[data-motion-active='true'] .technology-bubble { animation-play-state: running; }
+.technology-bubble:focus-within { scale: 1.05; }
+@media (hover: hover) { .technology-bubble:hover { scale: 1.05; } }
+@media (prefers-reduced-motion: reduce) {
+  .technology-bubble { animation: none; transition: none; }
+  .technology-bubble:hover, .technology-bubble:focus-within { scale: 1; }
+}

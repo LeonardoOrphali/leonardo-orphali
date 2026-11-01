@@ -1,0 +1,77 @@
+﻿.projects {
+  padding-block: clamp(3rem, 6vw, 5rem) clamp(4rem, 8vw, 7rem);
+  scroll-margin-top: 2rem;
+}
+.projects > h2 {
+  margin: 0 0 clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.project-list { display: grid; gap: clamp(4rem, 7vw, 6rem); }
+.project {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: 1fr auto auto 1fr;
+  row-gap: 0.5rem;
+  align-items: center;
+}
+.project-heading { grid-column: 1 / 6; grid-row: 1; align-self: end; }
+.project-heading h3 { margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.035em; }
+.project-media {
+  position: relative;
+  isolation: isolate;
+  grid-column: 6 / -1;
+  grid-row: 1 / 5;
+  margin: 1.25rem 1.25rem 0 0;
+}
+.project-media::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -1.25rem -1.25rem 1.25rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.project-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+}
+/* The placeholder asset is neutral; invert it only in the light theme. */
+:root[data-theme='light'] .project-placeholder img { filter: invert(1); }
+.project-description {
+  grid-column: 1 / 7;
+  grid-row: 2;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.project-technologies { grid-column: 1 / 6; grid-row: 3; margin: 0; color: var(--secondary); font-size: 0.8125rem; line-height: 1.6; }
+.project-actions { grid-column: 1 / 6; grid-row: 4; display: flex; flex-wrap: wrap; gap: 0.5rem; align-self: start; }
+.project-actions a, .project-actions button { display: inline-flex; align-items: center; justify-content: center; width: 44px; min-height: 44px; padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: var(--text); }
+.project-actions button:disabled { color: var(--secondary); cursor: default; opacity: 0.7; }
+.project-reversed { text-align: right; }
+.project-reversed .project-heading, .project-reversed .project-technologies, .project-reversed .project-actions { grid-column: 8 / -1; }
+.project-reversed .project-description { grid-column: 7 / -1; }
+.project-reversed .project-media { grid-column: 1 / 8; margin: 1.25rem 0 0 1.25rem; }
+.project-reversed .project-media::before { inset: -1.25rem 1.25rem 1.25rem -1.25rem; }
+.project-reversed .project-actions { justify-content: flex-end; }
+
+@media (max-width: 700px) {
+  .project, .project-reversed { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(5, auto); text-align: left; row-gap: 0.75rem; }
+  .project .project-heading { grid-column: 1; grid-row: 1; }
+  .project .project-media { grid-column: 1; grid-row: 2; }
+  .project .project-description { grid-column: 1; grid-row: 3; padding: 1rem; }
+  .project .project-technologies { grid-column: 1; grid-row: 4; }
+  .project .project-actions { grid-column: 1; grid-row: 5; justify-content: flex-start; }
+}
