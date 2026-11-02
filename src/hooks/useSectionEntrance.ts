@@ -1,9 +1,10 @@
-﻿import { useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { animate } from 'motion'
 
-// Scroll reveals repeat on re-entry. The footer deliberately remains static.
-export function useSectionEntrance() {
+// Each block reveals once per page load. The footer remains static.
+export function useSectionEntrance(enabled = true) {
   useLayoutEffect(() => {
+    if (!enabled) return
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (preference.matches || typeof IntersectionObserver !== 'function') return
     const blocks = Array.from(document.querySelectorAll<HTMLElement>('.objective, .technology-composition, .projects > h2, .project, .contact > h2, .contact-panel'))
@@ -18,6 +19,7 @@ export function useSectionEntrance() {
       const styles = original.get(element)
       if (styles) { element.style.opacity = styles.opacity; element.style.transform = styles.transform }
       pending.delete(element)
+      observer?.unobserve(element)
     }
     const hide = (element: HTMLElement) => {
       if (element.contains(document.activeElement)) return
@@ -31,10 +33,11 @@ export function useSectionEntrance() {
         let stagger = 0
         for (const entry of entries) {
           const element = entry.target as HTMLElement
-          if (!entry.isIntersecting) { hide(element); continue }
+          if (!entry.isIntersecting) continue
           const required = Math.min(entry.boundingClientRect.height * 0.15, window.innerHeight * 0.15)
           if (!pending.has(element) || entry.intersectionRect.height < required) continue
           pending.delete(element)
+          observer?.unobserve(element)
           try {
             const control = animate(element, { opacity: [0, 1], y: [18, 0] }, {
               duration: 0.55, delay: Math.min(stagger++ * 0.1, 0.15), ease: [0.2, 0.65, 0.3, 1],
@@ -46,8 +49,10 @@ export function useSectionEntrance() {
       }, { threshold: Array.from({ length: 16 }, (_, index) => index / 100) })
       blocks.forEach(element => {
         const rect = element.getBoundingClientRect()
-        if (rect.top >= window.innerHeight) hide(element)
-        observer?.observe(element)
+        if (rect.top >= window.innerHeight) {
+          hide(element)
+          observer?.observe(element)
+        }
       })
     } catch { showAll() }
     const onFocus = (event: FocusEvent) => {
@@ -62,5 +67,5 @@ export function useSectionEntrance() {
       document.removeEventListener('focusin', onFocus)
       preference.removeEventListener('change', onPreference)
     }
-  }, [])
+  }, [enabled])
 }

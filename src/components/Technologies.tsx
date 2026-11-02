@@ -108,7 +108,7 @@ export function Technologies() {
   }, [])
   return (
     <section ref={sectionRef} className="technologies" aria-labelledby="objective-title">
-      <h2 id="objective-title" className="objective">Busco uma oportunidade para criar soluções, aprender e evoluir como desenvolvedor.</h2>
+      <h2 id="objective-title" className="objective">Criar soluções, aprender com desafios e evoluir como desenvolvedor é o que me move.</h2>
       <div className="technology-composition">
         <div className="technology-rows">
           {rows.map((row, index) => (

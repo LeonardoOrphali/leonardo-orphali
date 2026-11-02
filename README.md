@@ -4,9 +4,7 @@
 
 Sou graduando em Ciência da Computação e desenvolvo aplicações web com **React, Next.js e C#/.NET**. Busco oportunidades para contribuir com projetos, aprender e evoluir como desenvolvedor.
 
-Este portfólio reúne meus projetos e as tecnologias que utilizo.
-
-[**Acesse meu portfólio ↗**](https://leonardoorphali.github.io/leonardo-orphali/)
+[**Acesse meu portfólio**](https://leonardoorphali.github.io/leonardo-orphali/)
 
 ---
 

@@ -61,10 +61,10 @@ export function Contact() {
 
   return (
     <section id="contato" className="contact" aria-labelledby="contact-title">
-      <h2 id="contact-title">Vamos conversar?</h2>
+      <h2 id="contact-title">Entre em contato</h2>
       <div className="contact-panel">
         <div className="contact-introduction">
-          <p>Uma ideia, uma oportunidade ou um novo projeto.</p>
+          <p>Vamos conversar sobre como posso contribuir com sua equipe.</p>
           <ArrowUpRight className="contact-decoration" aria-hidden="true" strokeWidth={0.75} />
         </div>
         <form className="contact-form" onSubmit={handleSubmit} noValidate aria-busy={status === 'sending'} aria-describedby={!contactService.available ? 'contact-unavailable' : undefined}>
@@ -91,7 +91,7 @@ export function Contact() {
           })}
           {!contactService.available && <p id="contact-unavailable" className="contact-notice">O envio de mensagens ainda não está disponível.</p>}
           <button className="contact-submit" type="submit" disabled={!contactService.available || status === 'sending'}>
-            {status === 'sending' ? 'Enviando mensagem' : 'Enviar mensagem'}<ArrowUpRight size={17} aria-hidden="true" />
+            {status === 'sending' ? 'Enviando mensagem' : 'Enviar mensagem'}
           </button>
           <p className="contact-status" role="status" aria-live="polite" aria-atomic="true">
             {status === 'sending' && 'Enviando sua mensagem…'}

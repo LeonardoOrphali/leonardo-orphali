@@ -1,4 +1,4 @@
-﻿.projects {
+.projects {
   padding-block: clamp(3rem, 6vw, 5rem) clamp(4rem, 8vw, 7rem);
   scroll-margin-top: 2rem;
 }
@@ -12,7 +12,7 @@
 .project {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-rows: 1fr auto 1fr;
   row-gap: 0.5rem;
   align-items: center;
 }
@@ -22,7 +22,7 @@
   position: relative;
   isolation: isolate;
   grid-column: 6 / -1;
-  grid-row: 1 / 5;
+  grid-row: 1 / 4;
   margin: 1.25rem 1.25rem 0 0;
 }
 .project-media::before {
@@ -37,13 +37,39 @@
   display: block;
   width: 100%;
   height: auto;
-  object-fit: contain;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center;
   border: var(--border-width) solid var(--border);
   border-radius: var(--radius);
 }
+.project-preview-trigger { display: block; width: 100%; padding: 0; border: 0; border-radius: var(--radius); background: transparent; cursor: zoom-in; }
+.project-lightbox { width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: clamp(1rem, 3vw, 3rem); border: 0; background: transparent; color: var(--text); }
+.project-lightbox[open] { display: grid; place-items: center; }
+.project-lightbox::backdrop { background: rgb(0 0 0 / 65%); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.project-lightbox-content { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; }
+.project-lightbox-image { display: block; width: auto; height: auto; max-width: min(80vw, 1200px); max-height: min(70dvh, calc(100dvh - 11rem)); object-fit: contain; border-radius: var(--radius); }
+.project-lightbox-visit { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0.75rem 1.5rem; border: var(--border-width) solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); font-size: 0.875rem; transition: background-color 180ms ease; }
+.project-lightbox-visit:disabled { color: var(--secondary); cursor: default; }
+@media (hover: hover) { .project-lightbox-visit[href]:hover { background: var(--active); } }
+.project-lightbox[open] .project-lightbox-content { animation: lightbox-enter 250ms ease-out both; }
+.project-lightbox[open]::backdrop { animation: lightbox-backdrop-enter 250ms ease-out both; }
+.project-lightbox.is-closing .project-lightbox-content { animation: lightbox-exit 180ms ease-in both; }
+.project-lightbox.is-closing::backdrop { animation: lightbox-backdrop-exit 180ms ease-in both; }
+@keyframes lightbox-enter { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes lightbox-exit { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.96); } }
+@keyframes lightbox-backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lightbox-backdrop-exit { from { opacity: 1; } to { opacity: 0; } }
+@media (max-width: 700px) { .project-lightbox-image { max-width: 90vw; } }
+@media (prefers-reduced-motion: reduce) {
+  .project-lightbox[open] .project-lightbox-content, .project-lightbox[open]::backdrop { animation: none; }
+  .project-lightbox-visit { transition: none; }
+}
+.project-lightbox-close { position: fixed; top: 1rem; right: 1rem; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: var(--border-width) solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); }
 /* The placeholder asset is neutral; invert it only in the light theme. */
 :root[data-theme='light'] .project-placeholder img { filter: invert(1); }
-.project-description {
+.project-details {
+  --details-padding: 1.25rem;
   grid-column: 1 / 7;
   grid-row: 2;
   position: relative;
@@ -56,22 +82,56 @@
   font-size: 1rem;
   line-height: 1.6;
 }
-.project-technologies { grid-column: 1 / 6; grid-row: 3; margin: 0; color: var(--secondary); font-size: 0.8125rem; line-height: 1.6; }
-.project-actions { grid-column: 1 / 6; grid-row: 4; display: flex; flex-wrap: wrap; gap: 0.5rem; align-self: start; }
+.project-description { margin: 0; }
+@supports (backdrop-filter: blur(12px)) {
+  .project-details {
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+.project-technologies { margin: 1rem 0 0; color: var(--secondary); font-size: 0.8125rem; line-height: 1.6; }
+.project-copy { position: relative; grid-column: 1 / 7; grid-row: 2; z-index: 1; }
+.project-copy:has(.is-expanded) { z-index: 3; }
+.project-copy-reserve { visibility: hidden; pointer-events: none; }
+.project-copy-content { position: absolute; top: 0; left: 0; right: 0; }
+.project-actions-reserve { height: 44px; margin-top: 0.5rem; }
+.project-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
 .project-actions a, .project-actions button { display: inline-flex; align-items: center; justify-content: center; width: 44px; min-height: 44px; padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: var(--text); }
 .project-actions button:disabled { color: var(--secondary); cursor: default; opacity: 0.7; }
+.project-actions a { color: var(--secondary); transition: color 180ms ease; }
+.project-actions a:focus-visible { color: var(--text); }
+@media (hover: hover) { .project-actions a:hover { color: var(--text); } }
+@media (prefers-reduced-motion: reduce) { .project-actions a { transition: none; } }
 .project-reversed { text-align: right; }
-.project-reversed .project-heading, .project-reversed .project-technologies, .project-reversed .project-actions { grid-column: 8 / -1; }
-.project-reversed .project-description { grid-column: 7 / -1; }
+.project-reversed .project-heading, .project-reversed .project-actions { grid-column: 8 / -1; }
+.project-reversed .project-copy { grid-column: 7 / -1; }
 .project-reversed .project-media { grid-column: 1 / 8; margin: 1.25rem 0 0 1.25rem; }
 .project-reversed .project-media::before { inset: -1.25rem 1.25rem 1.25rem -1.25rem; }
 .project-reversed .project-actions { justify-content: flex-end; }
 
 @media (max-width: 700px) {
-  .project, .project-reversed { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(5, auto); text-align: left; row-gap: 0.75rem; }
+  .project, .project-reversed { grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(4, auto); text-align: left; row-gap: 0.75rem; }
   .project .project-heading { grid-column: 1; grid-row: 1; }
   .project .project-media { grid-column: 1; grid-row: 2; }
-  .project .project-description { grid-column: 1; grid-row: 3; padding: 1rem; }
-  .project .project-technologies { grid-column: 1; grid-row: 4; }
-  .project .project-actions { grid-column: 1; grid-row: 5; justify-content: flex-start; }
+  .project .project-copy { grid-column: 1; grid-row: 3; }
+  .project .project-details { --details-padding: 1rem; padding: 1rem; }
+  .project .project-actions { grid-column: 1; grid-row: 4; justify-content: flex-start; }
+}
+
+.technology-disclosure-header { display: block; width: 100%; min-height: 1.3rem; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: inherit; }
+.technology-disclosure { position: relative; }
+.project-details:has(.technology-disclosure.is-expanded) { z-index: 3; }
+.technology-summary { display: block; width: 100%; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.technology-disclosure-header { display: grid; grid-template-columns: minmax(0, 1fr) 18px; column-gap: 0.5rem; }
+.technology-disclosure-arrow { grid-area: 1 / 2; align-self: start; margin-top: 1px; transition: transform 300ms ease; }
+.technology-disclosure.is-expanded .technology-disclosure-arrow { transform: rotate(180deg); }
+.technology-disclosure-content { position: relative; grid-area: 1 / 1; align-self: start; display: block; height: 1.3rem; overflow: hidden; transition: height 300ms ease; }
+.technology-disclosure.is-expanded .technology-disclosure-content { height: var(--technology-full-height, auto); }
+.technology-disclosure-inner { display: block; overflow: hidden; }
+.technology-disclosure:not(.is-expanded) .technology-full-list { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.technology-full-list { display: block; width: 100%; margin: 0; padding: 0; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.technology-list-item { display: inline; white-space: inherit; }
+@media (prefers-reduced-motion: reduce) {
+  .technology-disclosure-content, .technology-disclosure-arrow { transition: none; }
 }

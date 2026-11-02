@@ -1,12 +1,46 @@
-﻿import { Globe } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Globe, X } from 'lucide-react'
 import { GithubIcon } from './GithubIcon'
 import { projects } from '../data/projects'
+import { ProjectTechnologies } from './ProjectTechnologies'
 import './Projects.css'
 
 export function Projects() {
+  const [preview, setPreview] = useState<(typeof projects)[number] | null>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function closePreview() {
+    const dialog = dialogRef.current
+    if (!dialog?.open || closeTimer.current !== null) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      dialog.close()
+      return
+    }
+    dialog.classList.add('is-closing')
+    closeTimer.current = setTimeout(() => {
+      closeTimer.current = null
+      dialog.close()
+    }, 180)
+  }
+
+  useEffect(() => {
+    if (!preview || !dialogRef.current) return
+    const dialog = dialogRef.current
+    const previousOverflow = document.body.style.overflow
+    dialog.classList.remove('is-closing')
+    dialog.showModal()
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+      if (closeTimer.current !== null) clearTimeout(closeTimer.current)
+      closeTimer.current = null
+    }
+  }, [preview])
+
   return (
     <section id="projetos" className="projects" aria-labelledby="projects-title">
-      <h2 id="projects-title">Projetos selecionados</h2>
+      <h2 id="projects-title">Projetos</h2>
       <div className="project-list">
         {projects.map((project, index) => (
           <article className={`project${index % 2 ? ' project-reversed' : ''}`} aria-labelledby={`${project.id}-title`} key={project.id}>
@@ -14,27 +48,60 @@ export function Projects() {
               <h3 id={`${project.id}-title`}>{project.title}</h3>
             </div>
             <div className={`project-media${project.image.placeholder ? ' project-placeholder' : ''}`}>
-              <img src={project.image.src} alt={project.image.alt} width={project.image.width} height={project.image.height} loading="lazy" decoding="async" />
-            </div>
-            <p className="project-description">{project.description}</p>
-            <p className="project-technologies">{project.technologies}</p>
-            <div className="project-actions">
-              {[
-                { label: 'Ver projeto', url: project.projectUrl },
-                { label: 'GitHub', url: project.githubUrl },
-              ].map(({ label, url }) => url ? (
-                <a href={url} key={label} aria-label={`${label} — ${project.title}`}>
-                  {label === 'GitHub' ? <GithubIcon /> : <Globe size={23} aria-hidden="true" />}
-                </a>
+              {project.image.placeholder ? (
+                <img src={project.image.src} alt={project.image.alt} width={project.image.width} height={project.image.height} loading="lazy" decoding="async" />
               ) : (
-                <button disabled key={label} title={`${label} (em breve)`} aria-label={`${label} — ${project.title} (em breve)`}>
-                  {label === 'GitHub' ? <GithubIcon /> : <Globe size={23} aria-hidden="true" />}
+                <button className="project-preview-trigger" onClick={() => setPreview(project)} aria-label={`Ampliar captura do ${project.title}`} aria-haspopup="dialog">
+                  <img src={project.image.src} alt={project.image.alt} width={project.image.width} height={project.image.height} loading="lazy" decoding="async" />
                 </button>
-              ))}
+              )}
+            </div>
+            <div className="project-copy">
+              <div className="project-copy-reserve" aria-hidden="true">
+                <div className="project-details">
+                  <p className="project-description">{project.description}</p>
+                  <p className={`project-technologies${project.expandableTechnologies ? ' technology-summary' : ''}`}>{project.technologies}</p>
+                </div>
+                <div className="project-actions-reserve" />
+              </div>
+              <div className="project-copy-content">
+                <div className="project-details">
+                  <p className="project-description">{project.description}</p>
+                  <ProjectTechnologies technologies={project.technologies} expandable={project.expandableTechnologies} />
+                </div>
+                <div className="project-actions">
+                  {[
+                    { label: 'Ver projeto', url: project.projectUrl },
+                    { label: 'GitHub', url: project.githubUrl },
+                  ].map(({ label, url }) => url ? (
+                    <a href={url} key={label} target="_blank" rel="noopener noreferrer" title={`${label} — ${project.title}`} aria-label={`${label} — ${project.title} (abre em nova aba)`}>
+                      {label === 'GitHub' ? <GithubIcon /> : <Globe size={23} aria-hidden="true" />}
+                    </a>
+                  ) : (
+                    <button disabled key={label} title={`${label} (em breve)`} aria-label={`${label} — ${project.title} (em breve)`}>
+                      {label === 'GitHub' ? <GithubIcon /> : <Globe size={23} aria-hidden="true" />}
+                    </button>
+                  ))}
+                </div>
+                  </div>
             </div>
           </article>
         ))}
       </div>
+      <dialog ref={dialogRef} className="project-lightbox" aria-labelledby="project-preview-title" onClose={() => setPreview(null)} onCancel={event => { event.preventDefault(); closePreview() }} onClick={event => {
+        if (event.target === event.currentTarget) closePreview()
+      }}>
+        {preview && <>
+          <h2 id="project-preview-title" className="sr-only">Captura completa do {preview.title}</h2>
+          <button className="project-lightbox-close" type="button" onClick={closePreview} aria-label="Fechar imagem ampliada" autoFocus><X size={26} aria-hidden="true" /></button>
+          <div className="project-lightbox-content">
+            <img className="project-lightbox-image" src={preview.image.src} alt={preview.image.alt} width={preview.image.width} height={preview.image.height} decoding="async" />
+            {preview.projectUrl ? (
+              <a className="project-lightbox-visit" href={preview.projectUrl} target="_blank" rel="noopener noreferrer" aria-label={`Visitar site do ${preview.title} (abre em nova aba)`}>Visitar site</a>
+            ) : <button className="project-lightbox-visit" disabled>Visitar site</button>}
+          </div>
+        </>}
+      </dialog>
     </section>
   )
 }

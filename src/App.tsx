@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { Header } from './components/Header'
 import { Technologies } from './components/Technologies'
@@ -9,8 +9,10 @@ import { HeroCursor } from './components/HeroCursor'
 import { IntroTitle } from './components/IntroTitle'
 import { useSectionEntrance } from './hooks/useSectionEntrance'
 import { useIntroAnimation } from './hooks/useIntroAnimation'
+import { useSmoothNavigation } from './hooks/useSmoothNavigation'
 
 export default function App() {
+  useSmoothNavigation()
   useIntroAnimation()
   useSectionEntrance()
   const [theme, setTheme] = useState(() => document.documentElement.dataset.theme ?? 'light')
@@ -35,7 +37,7 @@ export default function App() {
           <div className="hero-copy">
             <p className="eyebrow">Leonardo Orphali</p>
             <IntroTitle />
-            <p className="description">Desenvolvo aplicações web com React, Next.js e C#/.NET, unindo interfaces simples e soluções bem estruturadas.</p>
+            <p className="description">Desenvolvo aplicações web com React, Next.js, TS e C#/.NET, unindo interfaces intuitivas e soluções bem estruturadas.</p>
             <a className="contact-button inline-flex items-center justify-center" href="#contato">Vamos conversar</a>
           </div>
           <HeroCursor />

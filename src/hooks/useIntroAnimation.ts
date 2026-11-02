@@ -1,8 +1,9 @@
-﻿import { useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { animate } from 'motion'
 
-export function useIntroAnimation() {
+export function useIntroAnimation(enabled = true) {
   useLayoutEffect(() => {
+    if (!enabled) return
     const hero = document.getElementById('sobre')
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
     if (!hero || preference.matches) return
@@ -103,5 +104,5 @@ export function useIntroAnimation() {
       preference.removeEventListener('change', onPreference)
       document.removeEventListener('focusin', onFocus)
     }
-  }, [])
+  }, [enabled])
 }
