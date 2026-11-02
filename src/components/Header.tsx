@@ -1,5 +1,6 @@
 ﻿import type { MouseEvent, ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import logoUrl from '../assets/branding/logo.png'
 
 const navigation = [
   { id: 'sobre', label: 'Sobre' },
@@ -92,7 +93,7 @@ export function Header({ themeControl }: { themeControl: ReactNode }) {
 
   return (
     <header ref={headerRef} className={`header page-shell grid items-center${scrolled ? ' header-scrolled' : ''}`}>
-      <a className="wordmark" href="#sobre" onClick={event => navigateTo(event, 'sobre')} aria-label="Leonardo Orphali — início"><span className="brand-logo"><img src="/logo.png" alt="" width="1536" height="1024" /></span></a>
+      <a className="wordmark" href="#sobre" onClick={event => navigateTo(event, 'sobre')} aria-label="Leonardo Orphali — início"><span className="brand-logo"><img src={logoUrl} alt="" width="1536" height="1024" /></span></a>
       <nav className="navigation flex items-center" aria-label="Navegação principal">
         {navigation.map(({ id, label }) => (
           <a key={id} className={`nav-item${activeSection === id ? ' active' : ''}`} href={`#${id}`} onClick={event => navigateTo(event, id)} aria-current={activeSection === id ? 'location' : undefined}>{label}</a>
