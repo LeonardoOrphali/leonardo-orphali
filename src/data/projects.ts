@@ -4,6 +4,7 @@ import finlyImage from '../assets/projects/finly.png'
 
 type Project = {
   id: string
+  hidden?: boolean
   title: string
   category: string
   description: string
@@ -29,6 +30,7 @@ export const projects: Project[] = [
   },
   {
     id: 'orven',
+    hidden: true, // Reativar quando o projeto estiver pronto.
     title: 'Orven',
     category: 'E-commerce de moda',
     description: 'O Orven é um e-commerce de moda que reúne catálogo de produtos, área administrativa e histórico de pedidos. O projeto conecta a apresentação das peças à organização da loja, com uma experiência voltada à navegação e à consulta de compras.',

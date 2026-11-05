@@ -115,6 +115,8 @@
   .project .project-heading { grid-column: 1; grid-row: 1; }
   .project .project-media { grid-column: 1; grid-row: 2; }
   .project .project-copy { grid-column: 1; grid-row: 3; }
+  .project .project-copy-reserve { display: none; }
+  .project .project-copy-content { position: relative; top: auto; left: auto; right: auto; }
   .project .project-details { --details-padding: 1rem; padding: 1rem; }
   .project .project-actions { grid-column: 1; grid-row: 4; justify-content: flex-start; }
 }

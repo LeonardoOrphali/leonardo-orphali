@@ -39,7 +39,7 @@
   list-style: none;
 }
 
-.technology-row + .technology-row { margin-top: 2.45098%; }
+.technology-row + .technology-row { grid-template-columns: repeat(6, minmax(0, 1fr)); width: 85.294118%; gap: 3.448276%; margin: 2.45098% auto 0; }
 
 .technology-bubble {
   position: relative;
@@ -92,7 +92,9 @@
 .orbital-code { stroke: var(--text); }
 
 @media (max-width: 700px) {
-  .objective { max-width: 27rem; margin-bottom: calc(var(--space-unit) * 3); }
+  .objective { max-width: 27rem; margin-bottom: calc(var(--space-unit) * 4); font-size: clamp(1.375rem, 5.8vw, 1.75rem); line-height: 1.4; }
+  .technology-composition { width: calc(100% + 2 * var(--page-gutter)); margin-inline: calc(-1 * var(--page-gutter)); aspect-ratio: 504 / 360; }
+  .technology-rows { inset-inline: 9.52381%; }
 }
 
 @keyframes technology-float {

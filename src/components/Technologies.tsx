@@ -1,6 +1,6 @@
 ﻿import type { CSSProperties } from 'react'
 import './Technologies.css'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { observeMotion } from '../utils/observeMotion'
 import react from '../assets/technologies/react.svg'
 import nextjs from '../assets/technologies/nextjs.svg'
@@ -12,7 +12,6 @@ import csharp from '../assets/technologies/csharp.svg'
 import dotnet from '../assets/technologies/dot-net.svg'
 import git from '../assets/technologies/git.svg'
 import docker from '../assets/technologies/docker.svg'
-import vitest from '../assets/technologies/vitest.svg'
 import sqlserver from '../assets/technologies/microsoftsqlserver.svg'
 import postgresql from '../assets/technologies/postgresql.svg'
 import mongodb from '../assets/technologies/mongodb.svg'
@@ -31,7 +30,6 @@ const rows = [
     { name: '.NET', icon: dotnet },
     { name: 'Git', icon: git },
     { name: 'Docker', icon: docker },
-    { name: 'Vitest', icon: vitest },
     { name: 'SQL Server', icon: sqlserver },
     { name: 'PostgreSQL', icon: postgresql },
     { name: 'MongoDB', icon: mongodb },
@@ -39,8 +37,8 @@ const rows = [
 ]
 
 // All coordinates share the 600 × 360 canvas with the HTML icon grid.
-// The seven curves begin at the bottom edge of the lower row (y = 106).
-const connectionStarts = [120, 180, 240, 300, 360, 420, 480]
+// The six curves begin at the bottom edge of the centered lower row (y = 106).
+const connectionStarts = [150, 210, 270, 330, 390, 450]
 
 const orbitRadii = [[115, 24], [150, 33], [185, 43], [245, 57]]
 const planets = [
@@ -54,6 +52,13 @@ const planets = [
 ]
 
 export function Technologies() {
+  const [mobile, setMobile] = useState(() => window.matchMedia('(max-width: 700px)').matches)
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 700px)')
+    const update = () => setMobile(media.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
   const sectionRef = useRef<HTMLElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const bubbles = useRef<(HTMLLIElement | null)[]>([])
@@ -71,12 +76,13 @@ export function Technologies() {
     const lengths = rings.current.map(path => path?.getTotalLength() ?? 0)
     const draw = () => {
       const bounds = svg.getBoundingClientRect()
-      const scale = bounds.width / 600
+      const viewport = svg.viewBox.baseVal
+      const scale = bounds.width / viewport.width
       if (!scale) return
       // Read every endpoint before writing, including CSS float and hover scale.
       const endpoints = bubbles.current.map(bubble => {
         const rect = bubble?.getBoundingClientRect()
-        return rect ? { x: (rect.left + rect.width / 2 - bounds.left) / scale, y: (rect.bottom - bounds.top) / scale } : null
+        return rect ? { x: (rect.left + rect.width / 2 - bounds.left) / scale + viewport.x, y: (rect.bottom - bounds.top) / scale + viewport.y } : null
       })
       endpoints.forEach((point, index) => {
         if (point) connections.current[index]?.setAttribute('d', `M ${point.x} ${point.y} C ${point.x} 172, 300 174, 300 246`)
@@ -122,7 +128,7 @@ export function Technologies() {
             </ul>
           ))}
         </div>
-        <svg ref={svgRef} className="technology-orbits" viewBox="0 0 600 360" fill="none" aria-hidden="true" focusable="false">
+        <svg ref={svgRef} className="technology-orbits" viewBox={mobile ? '48 0 504 360' : '0 0 600 360'} fill="none" aria-hidden="true" focusable="false">
           <g className="technology-connections">
             {connectionStarts.map((x, index) => (
               <path ref={node => { connections.current[index] = node }} key={x} d={`M ${x} 106 C ${x} 172, 300 174, 300 246`} />

@@ -40,9 +40,9 @@ export function Projects() {
 
   return (
     <section id="projetos" className="projects" aria-labelledby="projects-title">
-      <h2 id="projects-title">Projetos</h2>
+      <h2 id="projects-title">Projetos em destaque</h2>
       <div className="project-list">
-        {projects.map((project, index) => (
+        {projects.filter(project => !project.hidden).map((project, index) => (
           <article className={`project${index % 2 ? ' project-reversed' : ''}`} aria-labelledby={`${project.id}-title`} key={project.id}>
             <div className="project-heading">
               <h3 id={`${project.id}-title`}>{project.title}</h3>
