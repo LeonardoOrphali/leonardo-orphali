@@ -5,11 +5,14 @@ import { Technologies } from './components/Technologies'
 import { Projects } from './components/Projects'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
-import { HeroCursor } from './components/HeroCursor'
+import GradientASCII from './components/GradientASCII'
 import { IntroTitle } from './components/IntroTitle'
 import { useSectionEntrance } from './hooks/useSectionEntrance'
 import { useIntroAnimation } from './hooks/useIntroAnimation'
 import { useSmoothNavigation } from './hooks/useSmoothNavigation'
+
+const heroColors = ['#3b82f6', '#f6f8ff', '#a5d8ff', '#38bdf8']
+const lightHeroColors = ['#365eab', '#f7f9fc', '#dde8fa', '#8fb4e8']
 
 export default function App() {
   useSmoothNavigation()
@@ -32,19 +35,32 @@ export default function App() {
           {theme === 'dark' ? <Moon aria-hidden="true" /> : <Sun aria-hidden="true" />}
         </button>
       } />
-      <main className="page-shell">
+      <main>
         <section id="sobre" className="hero grid items-center" aria-labelledby="intro-title">
+          <div className="hero-background" aria-hidden="true">
+            <GradientASCII
+              colors={theme === 'light' ? lightHeroColors : heroColors}
+              lightMode={theme === 'light'}
+              gradientOpacity={theme === 'light' ? 0.4 : 0.9}
+              glyphOpacity={theme === 'light' ? 0.6 : 0.85}
+              density={theme === 'light' ? 0.7 : 0.8}
+              grain={theme === 'light' ? 0.025 : 0.08}
+              dpr={1}
+              mouseInteraction={false}
+              clickEffect="none"
+            />
+          </div>
           <div className="hero-copy">
             <p className="eyebrow">Leonardo Orphali</p>
             <IntroTitle />
-            <p className="description">Desenvolvo aplicações web com React, Next.js, TS e C#/.NET, unindo interfaces intuitivas e soluções bem estruturadas.</p>
             <a className="contact-button inline-flex items-center justify-center" href="#contato">Vamos conversar</a>
           </div>
-          <HeroCursor />
         </section>
-        <Technologies />
-        <Projects />
-        <Contact />
+        <div className="page-shell">
+          <Technologies />
+          <Projects />
+          <Contact />
+        </div>
       </main>
       <Footer />
     </>

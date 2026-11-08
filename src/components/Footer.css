@@ -1,5 +1,6 @@
-﻿.footer { width: min(100%, var(--header-max-width)); }
-.footer-content { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; border-top: var(--border-width) solid var(--border); padding-block: 1.25rem 1.5rem; font-size: 0.8125rem; color: var(--secondary); }
+.footer { position: relative; width: min(100%, var(--header-max-width)); }
+.footer::before { content: ''; position: absolute; top: 0; inset-inline: 0; height: var(--border-width); background: var(--border); box-shadow: 0 0 0 100vmax var(--border); clip-path: inset(0 -100vmax); pointer-events: none; }
+.footer-content { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; border-top: var(--border-width) solid transparent; padding-block: 1.25rem 1.5rem; font-size: 0.8125rem; color: var(--secondary); }
 .footer-name { grid-column: 1; grid-row: 1; }
 .footer-content .social-links { grid-column: 2; grid-row: 1; }
 .footer-location { grid-column: 3; grid-row: 1; justify-self: end; }

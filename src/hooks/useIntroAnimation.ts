@@ -9,9 +9,9 @@ export function useIntroAnimation(enabled = true) {
     if (!hero || preference.matches) return
     const characters = Array.from(hero.querySelectorAll<HTMLElement>('.typing-character'))
     const targets = [
-      document.querySelector<HTMLElement>('header'), hero.querySelector<HTMLElement>('.eyebrow'),
+      hero.querySelector<HTMLElement>('.eyebrow'),
       hero.querySelector<HTMLElement>('h1'), hero.querySelector<HTMLElement>('.description'),
-      hero.querySelector<HTMLElement>('.contact-button'), hero.querySelector<HTMLElement>('.cursor-container'),
+      hero.querySelector<HTMLElement>('.contact-button'),
     ].filter((element): element is HTMLElement => !!element)
     const original = targets.map(element => ({ opacity: element.style.opacity, transform: element.style.transform }))
     const controls: { stop: () => void }[] = []
@@ -31,7 +31,6 @@ export function useIntroAnimation(enabled = true) {
       controls.forEach(control => control.stop())
       targets.forEach(showTarget)
       hero.classList.remove('is-typing')
-      hero.removeAttribute('data-intro-pending')
       characters.forEach(character => {
         character.style.removeProperty('visibility')
         character.classList.remove('typing-current')
@@ -43,9 +42,9 @@ export function useIntroAnimation(enabled = true) {
       observer?.disconnect()
       try {
         hero.classList.add('is-typing')
-        hero.dataset.introPending = 'true'
         targets.forEach((element, index) => {
           element.style.opacity = '0'
+          if (element.classList.contains('contact-button')) return
           const control = animate(element, { opacity: [0, 1], y: [12, 0] }, {
             delay: index * 0.12, duration: 0.55, ease: [0.2, 0.65, 0.3, 1],
           })
@@ -53,7 +52,6 @@ export function useIntroAnimation(enabled = true) {
           void control.then(() => {
             if (!alive || finished) return
             showTarget(element, index)
-            if (element.classList.contains('cursor-container')) hero.removeAttribute('data-intro-pending')
           })
         })
         characters.forEach((character, index) => {
@@ -62,7 +60,17 @@ export function useIntroAnimation(enabled = true) {
             characters.forEach(item => item.classList.remove('typing-current'))
             character.style.visibility = 'visible'
             if (index < characters.length - 1) character.classList.add('typing-current')
-            else finish()
+            else {
+              finish()
+              const buttonIndex = targets.findIndex(element => element.classList.contains('contact-button'))
+              const button = targets[buttonIndex]
+              if (!button) return
+              const control = animate(button, { opacity: [0, 1], y: [12, 0] }, {
+                duration: 0.55, ease: [0.2, 0.65, 0.3, 1],
+              })
+              controls.push(control)
+              void control.then(() => { if (alive) showTarget(button, buttonIndex) })
+            }
           }, 240 + (index + 1) * 1200 / characters.length))
         })
       } catch (error) {
@@ -71,8 +79,7 @@ export function useIntroAnimation(enabled = true) {
       }
     }
 
-    // Restored scroll and old URL hashes must not permanently disable the intro.
-    // Play once when the actual hero content becomes visible; never reposition the page.
+    // Play once when the actual content is visible, including restored scroll.
     const content = hero.querySelector('.hero-copy') ?? hero
     const bounds = content.getBoundingClientRect()
     const headerHeight = document.querySelector('header')?.getBoundingClientRect().height ?? 80

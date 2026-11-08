@@ -1,4 +1,4 @@
-﻿export function IntroTitle() {
+export function IntroTitle() {
   return (
     <h1 id="intro-title">
       <span className="sr-only">Desenvolvedor Fullstack.</span>

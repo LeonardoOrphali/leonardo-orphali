@@ -1,0 +1,77 @@
+:root[data-theme='light'] {
+  --background: #f7f9fc;
+  --surface: #edf2f8;
+  --active: #e2ebf7;
+  --active-border: #b8cbea;
+  --text: #182638;
+  --secondary: #526277;
+  --border: #d3deeb;
+  --nav-accent: #245ac6;
+}
+
+:root[data-theme='light'] .header {
+  box-shadow: 0 4px 18px rgb(27 50 82 / 6%);
+}
+
+:root[data-theme='light'] .hero .contact-button {
+  color: #214c9b;
+  background: rgb(255 255 255 / 72%);
+  border-color: #b8cbea;
+  font-weight: 500;
+  box-shadow: inset 0 1px 0 white, 0 6px 20px rgb(32 70 125 / 7%);
+}
+
+:root[data-theme='light'] .hero .contact-button:focus-visible {
+  background: white;
+  border-color: var(--nav-accent);
+}
+
+:root[data-theme='light'] .technology-bubble {
+  background: white;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+:root[data-theme='light'] .project-details {
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 8px 28px rgb(27 50 82 / 7%);
+}
+
+:root[data-theme='light'] .contact-panel {
+  background: white;
+}
+
+:root[data-theme='light'] .contact-introduction {
+  background: var(--surface);
+}
+
+:root[data-theme='light'] .contact-submit {
+  background: var(--nav-accent);
+  border-color: var(--nav-accent);
+  color: white;
+}
+
+:root[data-theme='light'] .contact-submit:enabled:focus-visible {
+  background: #1e4ca8;
+  border-color: #1e4ca8;
+}
+
+:root[data-theme='light'] .contact-field input:focus-visible,
+:root[data-theme='light'] .contact-field textarea:focus-visible {
+  outline-color: var(--nav-accent);
+  border-color: var(--nav-accent);
+}
+
+@media (hover: hover) {
+  :root[data-theme='light'] .hero .contact-button:hover {
+    background: white;
+    border-color: var(--nav-accent);
+  }
+  :root[data-theme='light'] .social-link:hover,
+  :root[data-theme='light'] .project-actions a:hover {
+    color: var(--nav-accent);
+  }
+  :root[data-theme='light'] .contact-submit:enabled:hover {
+    background: #1e4ca8;
+    border-color: #1e4ca8;
+  }
+}

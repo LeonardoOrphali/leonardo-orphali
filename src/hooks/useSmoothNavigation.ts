@@ -37,8 +37,9 @@ export function useSmoothNavigation() {
         return
       }
       const startedAt = performance.now()
+      const duration = link?.classList.contains('contact-button') ? 750 : 500
       const animate = (now: number) => {
-        const progress = Math.min((now - startedAt) / 500, 1)
+        const progress = Math.min((now - startedAt) / duration, 1)
         const eased = progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2
         window.scrollTo({ top: start + (destination - start) * eased, behavior: 'instant' })
         if (progress < 1) frame = requestAnimationFrame(animate)

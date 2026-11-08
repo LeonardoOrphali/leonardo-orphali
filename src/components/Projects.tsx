@@ -1,14 +1,31 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Globe, X } from 'lucide-react'
 import { GithubIcon } from './GithubIcon'
 import { projects } from '../data/projects'
 import { ProjectTechnologies } from './ProjectTechnologies'
 import './Projects.css'
 
+const glitchColors = ['#3b82f6', '#a5d8ff', '#38bdf8']
+const LetterGlitch = lazy(() => import('./LetterGlitch'))
+
 export function Projects() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [showAccents, setShowAccents] = useState(false)
   const [preview, setPreview] = useState<(typeof projects)[number] | null>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const observer = new IntersectionObserver(entries => {
+      if (!entries.some(entry => entry.isIntersecting)) return
+      setShowAccents(true)
+      observer.disconnect()
+    }, { rootMargin: '200px' })
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
 
   function closePreview() {
     const dialog = dialogRef.current
@@ -39,7 +56,16 @@ export function Projects() {
   }, [preview])
 
   return (
-    <section id="projetos" className="projects" aria-labelledby="projects-title">
+    <section ref={sectionRef} id="projetos" className="projects" aria-labelledby="projects-title">
+      <div className="projects-accents" aria-hidden="true">
+        <Suspense fallback={null}>
+          {showAccents && ['start', 'end'].map(position => (
+            <div className={`projects-accent projects-accent-${position}`} key={position}>
+              <LetterGlitch glitchColors={glitchColors} baseColor="#7fa7cb" baseOpacity={0.65} density={0.8} glitchAmount={0.1} speed={0.6} fontSize={13} edgeFade={0.08} centerFade={0} intro={false} interactive={false} clickEffect="none" dpr={1} />
+            </div>
+          ))}
+        </Suspense>
+      </div>
       <h2 id="projects-title">Projetos em destaque</h2>
       <div className="project-list">
         {projects.filter(project => !project.hidden).map((project, index) => (
